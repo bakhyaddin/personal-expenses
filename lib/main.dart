@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import './widgets/transactions.dart';
+import './widgets/transactions_list.dart';
+import './widgets/user_input.dart';
+
+import './models/transaction.dart';
 
 void main() {
   runApp(PersonalExpenses());
@@ -10,17 +13,81 @@ class PersonalExpenses extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Flutter App",
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.deepOrange,
+        // brightness: Brightness.dark,
+        fontFamily: 'Quicksand',
+
+        // defining global text style for "title"
+        textTheme: TextTheme(title: TextStyle(fontFamily: "OpenSans")),
+        
+        // defining test style for appbar's "title"
+        appBarTheme: AppBarTheme(
+          textTheme:
+              TextTheme(title: TextStyle(fontFamily: "OpenSans", fontSize: 25)),
+        ),
+      ),
       home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _HomePageState();
+  }
+}
+
+class _HomePageState extends State<HomePage> {
+  final List<Transaction> _transactions = [
+    new Transaction(
+        id: "1", title: "Books", amount: 20.50, date: DateTime.now()),
+    new Transaction(
+        id: "2", title: "Shoes", amount: 35.20, date: DateTime.now()),
+  ];
+
+  void _addNewTransaction(String title, double amount) {
+    setState(() {
+      _transactions.add(new Transaction(
+          id: DateTime.now().toString(),
+          title: title,
+          amount: amount,
+          date: new DateTime.now()));
+    });
+  }
+
+  void _createNewTransaction(BuildContext context) {
+    //to build a Bottom Modal
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        // GestureDetector is responsible for dectecting actions on its child widget
+        // here the bottomModal is being closed with the help of it.
+        return GestureDetector(
+          onTap: () {},
+          child: UserInput(
+              addNewTransaction: (title, amount) =>
+                  _addNewTransaction(title, amount)),
+        );
+      },
+    );
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Personal Expenses"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _createNewTransaction(context),
+          )
+        ],
       ),
+
+      // SingleShildScrollView is added to avoid collusion of the soft keyboard and the widget.
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,9 +103,16 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            Transactions(),
+            TransactionsList(
+              transactions: _transactions,
+            )
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _createNewTransaction(context),
       ),
     );
   }

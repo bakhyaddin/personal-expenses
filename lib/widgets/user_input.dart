@@ -1,11 +1,36 @@
 import 'package:flutter/material.dart';
 
-class UserInput extends StatelessWidget {
+// THE WHOLE WIDGET TRANSFORMED TO A STATEFULWIDGET BECAUSE THE INPUT DATA WAS LOST IN main.dart
+
+class UserInput extends StatefulWidget {
+  // the constructor needed to be build in here
   final Function addNewTransaction;
+  UserInput({@required this.addNewTransaction});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _UserInputState();
+  }
+}
+
+class _UserInputState extends State<UserInput>{
   final titleInputController = TextEditingController();
   final amountInputController = TextEditingController();
 
-  UserInput({@required this.addNewTransaction});
+
+  void saveChanges() {
+    final title = titleInputController.text;
+    final amount = double.parse(amountInputController.text);
+
+    if (title.isEmpty || amount <= 0) {
+      return;
+    }
+    // it is the way to access of StatefulWidget class's property from the State class.
+    widget.addNewTransaction(title, amount);
+
+    // it closses the top most widget which is the bottom modal in our case
+    Navigator.of(context).pop();
+  }
 
   Widget build(BuildContext context) {
     return Card(
@@ -16,21 +41,23 @@ class UserInput extends StatelessWidget {
           children: <Widget>[
             TextField(
               controller: titleInputController,
+              onSubmitted: (_) => saveChanges(),
               decoration: InputDecoration(
                 labelText: ("Title"),
               ),
             ),
             TextField(
               controller: amountInputController,
+              onSubmitted: (_) => saveChanges(),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
                 labelText: ('Amount'),
               ),
             ),
             FlatButton(
-              textColor: Colors.purple,
+              textColor: Theme.of(context).primaryColor,
               child: Text("Add Transaction"),
-              onPressed: () => addNewTransaction(
-                  titleInputController.text, amountInputController.text),
+              onPressed: () => saveChanges(),
             )
           ],
         ),

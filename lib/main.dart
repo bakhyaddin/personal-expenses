@@ -21,7 +21,9 @@ class PersonalExpenses extends StatelessWidget {
         fontFamily: 'Quicksand',
 
         // defining global text style for "title"
-        textTheme: TextTheme(title: TextStyle(fontFamily: "OpenSans")),
+        textTheme: TextTheme(
+            title: TextStyle(fontFamily: "OpenSans"),
+            button: TextStyle(color: Colors.white)),
 
         // defining test style for appbar's "title"
         appBarTheme: AppBarTheme(
@@ -49,17 +51,17 @@ class _HomePageState extends State<HomePage> {
         id: "2", title: "Shoes", amount: 35.20, date: DateTime.now()),
   ];
 
-  void _addNewTransaction(String title, double amount) {
+  void _addNewTransaction(String title, double amount, DateTime date) {
     setState(() {
       _transactions.add(new Transaction(
           id: DateTime.now().toString(),
           title: title,
           amount: amount,
-          date: new DateTime.now()));
+          date: date));
     });
   }
 
-  void _createNewTransaction(BuildContext context) {
+  void _openNewTransactionModal(BuildContext context) {
     //to build a Bottom Modal
     showModalBottomSheet(
       context: context,
@@ -69,8 +71,8 @@ class _HomePageState extends State<HomePage> {
         return GestureDetector(
           onTap: () {},
           child: UserInput(
-              addNewTransaction: (title, amount) =>
-                  _addNewTransaction(title, amount)),
+              addNewTransaction: (title, amount, date) =>
+                  _addNewTransaction(title, amount, date)),
         );
       },
     );
@@ -95,7 +97,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () => _createNewTransaction(context),
+            onPressed: () => _openNewTransactionModal(context),
           )
         ],
       ),
@@ -121,7 +123,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => _createNewTransaction(context),
+        onPressed: () => _openNewTransactionModal(context),
       ),
     );
   }

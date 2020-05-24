@@ -6,7 +6,8 @@ class TransactionsList extends StatelessWidget {
   final List<Transaction> transactions;
   final Function deleteTransaction;
 
-  TransactionsList({@required this.transactions, @required this.deleteTransaction});
+  TransactionsList(
+      {@required this.transactions, @required this.deleteTransaction});
 
   Widget build(BuildContext context) {
     return Container(
@@ -37,7 +38,7 @@ class TransactionsList extends StatelessWidget {
                   elevation: 5,
                   child: ListTile(
                     leading: CircleAvatar(
-                      radius: 30,
+                      radius: 35,
                       child: Padding(
                         padding: EdgeInsets.all(6),
                         child: FittedBox(
@@ -54,7 +55,13 @@ class TransactionsList extends StatelessWidget {
                     subtitle: Text(
                       DateFormat.yMMMd().format(transactions[index].date),
                     ),
-                    trailing: IconButton(icon: Icon(Icons.delete, color: Theme.of(context).accentColor,), onPressed: () => deleteTransaction(index),),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Theme.of(context).errorColor,
+                      ),
+                      onPressed: () => deleteTransaction(index),
+                    ),
                   ),
                   //    Row(
                   //   children: <Widget>[

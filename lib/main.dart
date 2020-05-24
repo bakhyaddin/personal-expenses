@@ -76,6 +76,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _deleteTransaction(int index) {
+    setState(() {
+      _transactions.removeAt(index);
+    });
+  }
+
   List<Transaction> get _recentTransactions {
     return _transactions.where((el) {
       return el.date.isAfter(DateTime.now().subtract(new Duration(days: 7)));
@@ -107,6 +113,7 @@ class _HomePageState extends State<HomePage> {
                 )),
             TransactionsList(
               transactions: _transactions,
+              deleteTransaction: (index) => _deleteTransaction(index),
             )
           ],
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import './widgets/transactions_list.dart';
 import './widgets/user_input.dart';
+import './widgets/chart.dart';
 
 import './models/transaction.dart';
 
@@ -21,7 +22,7 @@ class PersonalExpenses extends StatelessWidget {
 
         // defining global text style for "title"
         textTheme: TextTheme(title: TextStyle(fontFamily: "OpenSans")),
-        
+
         // defining test style for appbar's "title"
         appBarTheme: AppBarTheme(
           textTheme:
@@ -64,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (_) {
         // GestureDetector is responsible for dectecting actions on its child widget
-        // here the bottomModal is being closed with the help of it.
+        // here the bottomModal is being closed after saving a new transaction.
         return GestureDetector(
           onTap: () {},
           child: UserInput(
@@ -73,6 +74,12 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((el) {
+      return el.date.isAfter(DateTime.now().subtract(new Duration(days: 7)));
+    }).toList();
   }
 
   Widget build(BuildContext context) {
@@ -93,16 +100,11 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: double.infinity,
-              // Card takes as much space as its parent Widget.
-              child: Card(
-                color: Colors.blue,
-                child: Text(
-                  "Sup",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
+                width: double.infinity,
+                // Card takes as much space as its parent Widget.
+                child: Chart(
+                  recentTransactions: _recentTransactions,
+                )),
             TransactionsList(
               transactions: _transactions,
             )

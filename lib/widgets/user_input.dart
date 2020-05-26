@@ -20,14 +20,14 @@ class _UserInputState extends State<UserInput> {
   DateTime _selectedDate;
 
   void saveChanges() {
-    if(_amountInputController.text.toString().isEmpty){
+    if (_amountInputController.text.toString().isEmpty) {
       return;
     }
 
     final title = _titleInputController.text;
     final amount = double.parse(_amountInputController.text);
 
-    if (title.isEmpty || amount <= 0) {
+    if (title.isEmpty || amount <= 0 || _selectedDate == null) {
       return;
     }
     // it is the way to access of StatefulWidget class's property from the State class.
@@ -39,6 +39,9 @@ class _UserInputState extends State<UserInput> {
 
   void _openDatePicker() {
     showDatePicker(
+            //context is avaible because context is already given automatically since it is a StatefulWideget class
+            //no need to pass a context object
+            // normally it takes "Builcontext" Object
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(2020),
@@ -54,56 +57,62 @@ class _UserInputState extends State<UserInput> {
   }
 
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: _titleInputController,
-              onSubmitted: (_) => saveChanges(),
-              decoration: InputDecoration(
-                labelText: ("Title"),
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+          child: Column(
+            children: <Widget>[
+              TextField(
+                controller: _titleInputController,
+                onSubmitted: (_) => saveChanges(),
+                decoration: InputDecoration(
+                  labelText: ("Title"),
+                ),
               ),
-            ),
-            TextField(
-              controller: _amountInputController,
-              onSubmitted: (_) => saveChanges(),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                labelText: ('Amount'),
+              TextField(
+                controller: _amountInputController,
+                onSubmitted: (_) => saveChanges(),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: ('Amount'),
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                      _selectedDate != null
-                          ? DateFormat.yMd().format(_selectedDate)
-                          : "No date chosen",
-                      style: TextStyle(fontSize: 15)),
-                  FlatButton(
-                    child: Text(
-                      "Choose date",
-                      style: TextStyle(color: Theme.of(context).primaryColor),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                        _selectedDate != null
+                            ? DateFormat.yMd().format(_selectedDate)
+                            : "No date chosen",
+                        style: TextStyle(fontSize: 15)),
+                    FlatButton(
+                      child: Text(
+                        "Choose date",
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                      onPressed: _openDatePicker,
                     ),
-                    onPressed: _openDatePicker,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            RaisedButton(
-              color: Theme.of(context).primaryColor,
-              child: Text(
-                "Add Transaction",
-                style: Theme.of(context).textTheme.button,
-              ),
-              onPressed: () => saveChanges(),
-            )
-          ],
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  "Add Transaction",
+                  style: Theme.of(context).textTheme.button,
+                ),
+                onPressed: () => saveChanges(),
+              )
+            ],
+          ),
         ),
       ),
     );

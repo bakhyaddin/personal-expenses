@@ -46,6 +46,7 @@ class Chart extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(10),
         child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: _groupedTransactionList.map((trx) {
               // in Flexible we can define 'flex'

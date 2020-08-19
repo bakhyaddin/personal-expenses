@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -103,8 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final isPortrait =
-        mediaQuery.orientation == Orientation.portrait;
+    final isPortrait = mediaQuery.orientation == Orientation.portrait;
     final appBar = AppBar(
       title: Text("Personal Expenses"),
       actions: <Widget>[
@@ -138,7 +139,8 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text("${_showChart ? "Hide" : "Show"} Chart"),
-                  Switch(
+                  Switch.adaptive(
+                    activeColor: Theme.of(context).accentColor,
                     value: _showChart,
                     onChanged: (val) {
                       setState(() {
@@ -179,10 +181,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _openNewTransactionModal(),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _openNewTransactionModal(),
+            ),
     );
   }
 }

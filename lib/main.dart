@@ -8,11 +8,12 @@ import './widgets/user_input.dart';
 import './widgets/chart.dart';
 
 import './models/transaction.dart';
+import './utils/device_size.dart';
 
 void main() {
   // this makes sure the orientation settings work properly in every device
   WidgetsFlutterBinding.ensureInitialized();
-  // setting up orientatios
+  // setting up orientation
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.landscapeLeft]);
   runApp(PersonalExpenses());
@@ -25,7 +26,7 @@ class PersonalExpenses extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.deepOrange,
-        // brightness: Brightness.dark,
+        brightness: Brightness.dark,
         fontFamily: 'Quicksand',
 
         // defining global text style for "title"
@@ -71,10 +72,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _openNewTransactionModal() {
+  void _openNewTransactionModal(BuildContext context) {
     //to build a Bottom Modal
     showModalBottomSheet(
-      //context is avaible because context is already given automatically since it is a StatefulWideget class
+      //context is avaible because context is already given automatically since it is a StatefulWidget class
       //no need to pass a context object
       //normally it takes "Builcontext" Object
       context: context,
@@ -111,10 +112,12 @@ class _HomePageState extends State<HomePage> {
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.add),
-          onPressed: () => _openNewTransactionModal(),
+          onPressed: () => _openNewTransactionModal(context),
         )
       ],
     );
+    
+    DeviceSize deviceSize = DeviceSize(appBar: appBar, context: context);
 
     final transactionsList = Container(
       height: (mediaQuery.size.height -
@@ -152,9 +155,7 @@ class _HomePageState extends State<HomePage> {
               ),
             if (isPortrait)
               Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
+                height: deviceSize.getDeviceHeight() *
                     0.25,
                 width: double.infinity,
                 // Card takes as much space as its parent Widget.
@@ -166,9 +167,7 @@ class _HomePageState extends State<HomePage> {
             if (!isPortrait)
               _showChart
                   ? Container(
-                      height: (mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              mediaQuery.padding.top) *
+                      height: deviceSize.getDeviceHeight() *
                           0.7,
                       width: double.infinity,
                       // Card takes as much space as its parent Widget.
@@ -185,7 +184,7 @@ class _HomePageState extends State<HomePage> {
           ? Container()
           : FloatingActionButton(
               child: Icon(Icons.add),
-              onPressed: () => _openNewTransactionModal(),
+              onPressed: () => _openNewTransactionModal(context),
             ),
     );
   }
